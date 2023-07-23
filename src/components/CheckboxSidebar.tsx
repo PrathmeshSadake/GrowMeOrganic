@@ -1,3 +1,4 @@
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/20/solid";
 import { Box, Checkbox, FormControlLabel } from "@mui/material";
 import { useState } from "react";
 
@@ -10,6 +11,7 @@ interface CheckboxSidebarProps {
 
 const CheckboxSidebar: React.FC<CheckboxSidebarProps> = ({ item }) => {
   const [checked, setChecked] = useState([false, false, false]);
+  const [subDepartment, setSubDepartment] = useState(false);
 
   const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked([
@@ -36,35 +38,57 @@ const CheckboxSidebar: React.FC<CheckboxSidebarProps> = ({ item }) => {
     }
   };
 
+  const toggleParent = () => {
+    setSubDepartment(!subDepartment);
+  };
+
   return (
     <div>
-      <FormControlLabel
-        label={item.department.toUpperCase()}
-        control={
-          <Checkbox
-            checked={
-              item.sub_departments.length === 2
-                ? checked[0] && checked[1]
-                : checked[0] && checked[1] && checked[2]
-            }
-            indeterminate={checked[0] !== checked[1]}
-            onChange={handleChange1}
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <FormControlLabel
+          label={item.department.toUpperCase()}
+          control={
+            <Checkbox
+              checked={
+                item.sub_departments.length === 2
+                  ? checked[0] && checked[1]
+                  : checked[0] && checked[1] && checked[2]
+              }
+              indeterminate={checked[0] !== checked[1]}
+              onChange={handleChange1}
+            />
+          }
+        />
+        {subDepartment ? (
+          <ChevronUpIcon
+            height={25}
+            style={{ cursor: "pointer" }}
+            onClick={toggleParent}
           />
-        }
-      />
-      <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
-        {item.sub_departments.map((sub_department, idx) => (
-          <FormControlLabel
-            label={sub_department.toUpperCase()}
-            control={
-              <Checkbox
-                checked={checked[idx]}
-                onChange={(e) => handleChange2(e, idx)}
-              />
-            }
+        ) : (
+          <ChevronDownIcon
+            height={25}
+            style={{ cursor: "pointer" }}
+            onClick={toggleParent}
           />
-        ))}
+        )}
       </Box>
+
+      {subDepartment && (
+        <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
+          {item.sub_departments.map((sub_department, idx) => (
+            <FormControlLabel
+              label={sub_department.toUpperCase()}
+              control={
+                <Checkbox
+                  checked={checked[idx]}
+                  onChange={(e) => handleChange2(e, idx)}
+                />
+              }
+            />
+          ))}
+        </Box>
+      )}
     </div>
   );
 };
