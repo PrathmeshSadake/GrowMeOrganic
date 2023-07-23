@@ -1,9 +1,20 @@
-import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import axios from "axios";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import CheckboxSidebar from "../components/CheckboxSidebar";
+
+const checkboxData = [
+  {
+    department: "customer_service",
+    sub_departments: ["support", "customer_success"],
+  },
+  {
+    department: "design",
+    sub_departments: ["graphic_design", "product_design", "web_design"],
+  },
+];
 
 interface Item {
   id: number;
@@ -15,40 +26,6 @@ interface Item {
 const SecondPage = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<Item[]>([]);
-
-  const [checked, setChecked] = useState([false, false]);
-  const [checked2, setChecked2] = useState([false, false, false]);
-
-  const handleChange1 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked([event.target.checked, event.target.checked]);
-  };
-
-  const handleChange2 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked([event.target.checked, checked[1]]);
-  };
-
-  const handleChange3 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked([checked2[0], event.target.checked]);
-  };
-
-  const handleChange4 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked2([
-      event.target.checked,
-      event.target.checked,
-      event.target.checked,
-    ]);
-  };
-
-  const handleChange5 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked2([event.target.checked, checked2[1], checked2[2]]);
-  };
-
-  const handleChange6 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked2([checked2[0], event.target.checked, checked2[2]]);
-  };
-  const handleChange7 = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setChecked2([checked2[0], checked2[1], event.target.checked]);
-  };
 
   const fetchData = async () => {
     const { data } = await axios.get(
@@ -102,65 +79,9 @@ const SecondPage = () => {
         </Box>
       )}
       <Box sx={{ height: "100%", width: "100%" }}>
-        <div>
-          <FormControlLabel
-            label={"customer service".toUpperCase()}
-            control={
-              <Checkbox
-                checked={checked[0] && checked[1]}
-                indeterminate={checked[0] !== checked[1]}
-                onChange={handleChange1}
-              />
-            }
-          />
-          <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
-            <FormControlLabel
-              label={"support".toUpperCase()}
-              control={
-                <Checkbox checked={checked[0]} onChange={handleChange2} />
-              }
-            />
-            <FormControlLabel
-              label={"customer success".toUpperCase()}
-              control={
-                <Checkbox checked={checked[1]} onChange={handleChange3} />
-              }
-            />
-          </Box>
-        </div>
-        <div>
-          <FormControlLabel
-            label={"design".toUpperCase()}
-            control={
-              <Checkbox
-                checked={checked2[0] && checked2[1] && checked2[2]}
-                indeterminate={(checked2[0] !== checked2[1]) !== checked2[2]}
-                onChange={handleChange4}
-              />
-            }
-          />
-          <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
-            <FormControlLabel
-              label={"Graphic Design".toUpperCase()}
-              control={
-                <Checkbox checked={checked2[0]} onChange={handleChange5} />
-              }
-            />
-
-            <FormControlLabel
-              label={"Product Design".toUpperCase()}
-              control={
-                <Checkbox checked={checked2[1]} onChange={handleChange6} />
-              }
-            />
-            <FormControlLabel
-              label={"Web design".toUpperCase()}
-              control={
-                <Checkbox checked={checked2[2]} onChange={handleChange7} />
-              }
-            />
-          </Box>
-        </div>
+        {checkboxData.map((item) => (
+          <CheckboxSidebar item={item} />
+        ))}
       </Box>
     </div>
   );
